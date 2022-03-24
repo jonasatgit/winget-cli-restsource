@@ -338,6 +338,7 @@ namespace Microsoft.WinGet.RestSource.IntegrationTest.Functions
                     {
                         RelativeUrlPath = $"packageManifests",
                         JsonFileName = PowerToysJsonFileName,
+                        TestCollateralType = TestCollateral.TestCollateralType.Manifests,
                     },
                 },
             };

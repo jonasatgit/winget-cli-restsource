@@ -37,17 +37,23 @@ namespace Microsoft.WinGet.RestSource.IntegrationTest.Common
             /// Maps to manifest directory in test collateral.
             /// </summary>
             Manifests,
+
+            /// <summary>
+            /// Represents request files.
+            /// </summary>
+            RequestFiles,
         }
 
         /// <summary>
         /// Fetches the test collateral.
         /// </summary>
         /// <param name="name">Test Collateral name.</param>
+        /// <param name="testCollateralType">Test collateral type.</param>
         /// <returns>The full path to the test collateral.</returns>
-        public string FetchTestCollateralPath(string name)
+        public string FetchTestCollateralPath(string name, TestCollateralType testCollateralType)
         {
             string testCollateralPath = Path.Combine(
-                this.testCollateralDirectoryPath, TestCollateralType.Manifests.ToString(), name);
+                this.testCollateralDirectoryPath, testCollateralType.ToString(), name);
             if (!File.Exists(testCollateralPath))
             {
                 throw new FileNotFoundException($"{name} not found in test collateral directory.");
@@ -60,10 +66,11 @@ namespace Microsoft.WinGet.RestSource.IntegrationTest.Common
         /// Fetches the test collateral.
         /// </summary>
         /// <param name="name">Test Collateral name.</param>
+        /// <param name="testCollateralType">Test collateral type.</param>
         /// <returns>The full path to the test collateral.</returns>
-        public string FetchTestCollateralContent(string name)
+        public string FetchTestCollateralContent(string name, TestCollateralType testCollateralType)
         {
-            return File.ReadAllText(this.FetchTestCollateralPath(name));
+            return File.ReadAllText(this.FetchTestCollateralPath(name, testCollateralType));
         }
 
         private void Initialize()

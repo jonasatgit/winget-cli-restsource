@@ -40,7 +40,7 @@ namespace Microsoft.WinGet.RestSource.IntegrationTest.Common
             foreach (EndPointRequest request in this.EndPointRequests)
             {
                 HttpContent content = new StringContent(
-                    fixture.TestCollateral.FetchTestCollateralContent(request.JsonFileName));
+                    fixture.TestCollateral.FetchTestCollateralContent(request.JsonFileName, request.TestCollateralType));
                 string url = $"{fixture.RestSourceUrl}/{request.RelativeUrlPath}";
 
                 await url
