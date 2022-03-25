@@ -54,7 +54,7 @@ steps:
 
     Write-Host "Installed winget."
 
-    & winget source add -n "winget-cli-restsource" -a $(RestSourceUrl) -t "Microsoft.Rest"
+    & winget -v
   displayName: "Setup test pre-requisites"
 
 - task: DotNetCoreCLI@2
