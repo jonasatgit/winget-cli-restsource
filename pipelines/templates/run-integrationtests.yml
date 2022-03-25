@@ -70,4 +70,5 @@ steps:
     projects: '$(Build.SourcesDirectory)\src\WinGet.RestSource.IntegrationTest\*.csproj'
   env:
     RestSourceUrl: "$(RestSourceUrl)" #  variable set in pipeline settings
+    FunctionsHostKey: "$(FunctionsHostKey)"
     
