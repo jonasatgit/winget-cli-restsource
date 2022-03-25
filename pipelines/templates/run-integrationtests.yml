@@ -56,7 +56,7 @@ steps:
   displayName: "Setup test pre-requisites"
 
 - powershell: |
-    & winget source add -n "winget-cli-restsource" -a $(RestSourceUrl) -t "Microsoft.Rest"
+    & winget source add -n "winget-cli-restsource" -a "$(RestSourceUrl)" -t "Microsoft.Rest"
 
     Write-Host "Added Rest Source."
 
