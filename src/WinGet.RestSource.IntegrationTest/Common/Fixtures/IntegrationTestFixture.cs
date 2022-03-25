@@ -56,6 +56,12 @@ namespace Microsoft.WinGet.RestSource.IntegrationTest.Common.Fixtures
             this.RestSourceUrl = this.RestSourceUrl.TrimEnd('/');
 
             this.FunctionsHostKey = configuration[functionsHostKeyKey] ?? throw new NullException(functionsHostKeyKey);
+
+            if (string.IsNullOrWhiteSpace(this.FunctionsHostKey))
+            {
+                throw new ArgumentNullException(nameof(this.FunctionsHostKey));
+            }
+
             this.AddRestSource = bool.TryParse(configuration[addRestSourceKey], out bool addRestSource) && addRestSource;
             this.RunWriteTests = bool.TryParse(configuration[RunWriteTestsKey], out bool runWriteTests) && runWriteTests;
 
@@ -102,11 +108,6 @@ namespace Microsoft.WinGet.RestSource.IntegrationTest.Common.Fixtures
         /// Gets the rest source name to use with the winget client.
         /// </summary>
         public string RestSourceName { get; }
-
-        /// <summary>
-        /// Gets the logger to use for tests.
-        /// </summary>
-        public ITestOutputHelper Log { get; }
 
         /// <summary>
         /// Gets the Cosmos Data store.
