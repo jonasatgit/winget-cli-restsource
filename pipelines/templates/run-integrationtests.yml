@@ -53,8 +53,6 @@ steps:
     Add-AppxPackage "$(System.ArtifactsDirectory)\Microsoft.DesktopAppInstaller_8wekyb3d8bbwe.msixbundle"
 
     Write-Host "Installed winget."
-
-    & winget -v
   displayName: "Setup test pre-requisites"
 
 - task: DotNetCoreCLI@2
