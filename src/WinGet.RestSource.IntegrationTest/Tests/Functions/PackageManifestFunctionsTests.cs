@@ -214,54 +214,6 @@ namespace Microsoft.WinGet.RestSource.IntegrationTest.Functions
         }
 
         /// <summary>
-        /// Verifies that the search API correctly handles a search using a search query term.
-        /// </summary>
-        /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
-        [Fact]
-        public async Task SearchUsingQuery()
-        {
-            this.log.WriteLine("Tests that SearchPackageManifests returns the expected results when using the Query property.");
-            {
-                await this.TestSearchQuery("PowerToys", MatchType.Exact, PowerToysPackageIdentifier);
-                await this.TestSearchQuery("powertoys", MatchType.CaseInsensitive, PowerToysPackageIdentifier);
-                await this.TestSearchQuery("PowerT", MatchType.StartsWith, PowerToysPackageIdentifier);
-                await this.TestSearchQuery("owertoy", MatchType.Substring, PowerToysPackageIdentifier);
-                await this.TestSearchQuery("nonexistentpackage", MatchType.Substring);
-            }
-
-            this.log.WriteLine("Tests that using ContinuationToken with SearchPackageManifests allows us to retrieve all manifests.");
-            {
-                /* TODO: Test writing to the repository between reads on the continuation token. */
-
-                var allResults = new HashSet<ManifestSearchResponse>();
-                string continuationToken = null;
-                do
-                {
-                    var manifestSearchRequest = new ManifestSearchRequest();
-                    var result = await this.GetSearchResults(manifestSearchRequest, continuationToken);
-                    allResults.UnionWith(result.Data);
-                    continuationToken = result.ContinuationToken;
-                }
-                while (continuationToken != null);
-                Assert.True(allResults.Count > MaxResultsPerPage);
-            }
-        }
-
-        /// <summary>
-        /// Verifies that the API correctly handles a search using filters.
-        /// </summary>
-        /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
-        [Fact]
-        public async Task SearchUsingFilter()
-        {
-            await this.TestSearchFilter(PackageMatchFields.PackageName, "PowerToys", MatchType.Exact, PowerToysPackageIdentifier);
-            await this.TestSearchFilter(PackageMatchFields.PackageName, "powertoys", MatchType.CaseInsensitive, PowerToysPackageIdentifier);
-            await this.TestSearchFilter(PackageMatchFields.PackageName, "PowerT", MatchType.StartsWith, PowerToysPackageIdentifier);
-            await this.TestSearchFilter(PackageMatchFields.PackageName, "owertoy", MatchType.Substring, PowerToysPackageIdentifier);
-            await this.TestSearchFilter(PackageMatchFields.PackageName, "nonexistentpackage", MatchType.Substring);
-        }
-
-        /// <summary>
         /// Represents test for package manifest versions.
         /// </summary>
         /// <param name="helper">An object of type <see cref="EndPointRequest"/>.</param>
@@ -296,16 +248,6 @@ namespace Microsoft.WinGet.RestSource.IntegrationTest.Functions
                 Assert.True(versionsCount == 1, $"Version count: {versionsCount} must have a value of 1 for VersionFound scenario");
                 PackageManifest packageManifest = response.Data[0];
                 Assert.Equal(helper.ExpectedVersions[0], packageManifest.Versions[0].PackageVersion);
-            }
-        }
-
-        private static void VerifyResult(SearchApiResponse<List<ManifestSearchResponse>> results, params string[] expectedPackageIdentifiers)
-        {
-            Assert.Equal(expectedPackageIdentifiers.Length, results.Data.Count);
-            var packageIdentifierResults = results.Data.Select(i => i.PackageIdentifier).ToList();
-            foreach (var expectedPackageIdentifier in expectedPackageIdentifiers)
-            {
-                Assert.Contains(expectedPackageIdentifier, packageIdentifierResults);
             }
         }
 
@@ -359,45 +301,6 @@ namespace Microsoft.WinGet.RestSource.IntegrationTest.Functions
 
             // Should succeed once the authorization key is added.
             await method(url.SetQueryParam("code", this.fixture.FunctionsHostKey));
-        }
-
-        private async Task<SearchApiResponse<List<ManifestSearchResponse>>> GetSearchResults(ManifestSearchRequest manifestSearchRequest, string continuationToken = null)
-        {
-            string url = this.fixture.RestSourceUrl.AppendPathSegment("manifestSearch");
-
-            IFlurlResponse response;
-            if (continuationToken != null)
-            {
-                response = await url.WithHeader(HeaderConstants.ContinuationToken, continuationToken).PostJsonAsync(manifestSearchRequest);
-            }
-            else
-            {
-                response = await url.PostJsonAsync(manifestSearchRequest);
-            }
-
-            return await response.GetJsonAsync<SearchApiResponse<List<ManifestSearchResponse>>>();
-        }
-
-        private async Task TestSearchQuery(string value, string matchType, params string[] expectedPackageIdentifiers)
-        {
-            var manifestSearchRequest = new ManifestSearchRequest();
-            manifestSearchRequest.Query = new RestSource.Utils.Models.Objects.SearchRequestMatch();
-            manifestSearchRequest.Query.KeyWord = value;
-            manifestSearchRequest.Query.MatchType = matchType;
-            var results = await this.GetSearchResults(manifestSearchRequest);
-            VerifyResult(results, expectedPackageIdentifiers);
-        }
-
-        private async Task TestSearchFilter(string packageMatchField, string value, string matchType, params string[] expectedPackageIdentifiers)
-        {
-            var manifestSearchRequest = new ManifestSearchRequest();
-            manifestSearchRequest.Filters = new RestSource.Utils.Models.Arrays.SearchRequestPackageMatchFilter
-            {
-                new RestSource.Utils.Models.Objects.SearchRequestPackageMatchFilter { PackageMatchField = packageMatchField, RequestMatch = new RestSource.Utils.Models.Objects.SearchRequestMatch { KeyWord = value, MatchType = matchType } },
-            };
-
-            var results = await this.GetSearchResults(manifestSearchRequest);
-            VerifyResult(results, expectedPackageIdentifiers);
         }
     }
 }

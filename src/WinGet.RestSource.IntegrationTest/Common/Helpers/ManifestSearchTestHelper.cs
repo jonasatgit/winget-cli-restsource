@@ -36,7 +36,7 @@ namespace Microsoft.WinGet.RestSource.IntegrationTest.Common.Helpers
         /// <summary>
         /// Gets or sets the search response test helper.
         /// </summary>
-        public SearchResponseTestHelper[] SearchResponseTestHelpers { get; set; }
+        public SearchResponseTestHelper[] SearchResponses { get; set; }
 
         /// <summary>
         /// Gets or sets the maximum allowed response time.
@@ -49,7 +49,7 @@ namespace Microsoft.WinGet.RestSource.IntegrationTest.Common.Helpers
             this.EndPointRequest = info.GetValue<EndPointRequest>(nameof(this.EndPointRequest));
             this.StorageSetup = info.GetValue<StorageSetup>(nameof(this.StorageSetup));
             this.StorageCleanup = info.GetValue<StorageCleanup>(nameof(this.StorageCleanup));
-            this.SearchResponseTestHelpers = info.GetValue<SearchResponseTestHelper[]>(nameof(this.SearchResponseTestHelpers));
+            this.SearchResponses = info.GetValue<SearchResponseTestHelper[]>(nameof(this.SearchResponses));
             this.MaximumAllowedResponseTime = info.GetValue<int>(nameof(this.MaximumAllowedResponseTime));
         }
 
@@ -59,7 +59,7 @@ namespace Microsoft.WinGet.RestSource.IntegrationTest.Common.Helpers
             info.AddValue(nameof(this.EndPointRequest), this.EndPointRequest, typeof(EndPointRequest));
             info.AddValue(nameof(this.StorageSetup), this.StorageSetup, typeof(StorageSetup));
             info.AddValue(nameof(this.StorageCleanup), this.StorageCleanup, typeof(StorageCleanup));
-            info.AddValue(nameof(this.SearchResponseTestHelpers), this.SearchResponseTestHelpers, typeof(SearchResponseTestHelper[]));
+            info.AddValue(nameof(this.SearchResponses), this.SearchResponses, typeof(SearchResponseTestHelper[]));
             info.AddValue(nameof(this.MaximumAllowedResponseTime), this.MaximumAllowedResponseTime, typeof(int));
         }
     }
